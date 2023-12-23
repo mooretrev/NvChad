@@ -5,9 +5,9 @@ local M = {}
 M.general = {
   i = {
     -- go to  beginning and end
-    ["<C-b>"] = { "<ESC>^i", "Beginning of line" },
-    ["<C-e>"] = { "<End>", "End of line" },
-
+    -- ["<C-b>"] = { "<ESC>^i", "Beginning of line" },
+    -- ["<C-e>"] = { "<End>", "End of line" },
+    --
     -- navigate within insert mode
     ["<C-h>"] = { "<Left>", "Move left" },
     ["<C-l>"] = { "<Right>", "Move right" },
@@ -15,15 +15,17 @@ M.general = {
     ["<C-k>"] = { "<Up>", "Move up" },
   },
 
+  -- pastes without delete the buffer 
   n = {
-    ["<Esc>"] = { "<cmd> noh <CR>", "Clear highlights" },
-    -- switch between windows
-    ["<C-h>"] = { "<C-w>h", "Window left" },
-    ["<C-l>"] = { "<C-w>l", "Window right" },
-    ["<C-j>"] = { "<C-w>j", "Window down" },
-    ["<C-k>"] = { "<C-w>k", "Window up" },
+    ["<leader>co"] = {"j[{0t(a.only<Esc>", "Add onlys"},
+    ["<leader>cr"] = {"<cmd> %s/.only/<CR>", "Remove onlys"},
 
-    -- save
+    ["<Esc>"] = { "<cmd> noh <CR>", "Clear highlights" },
+
+    -- switch between windows
+    ["<leader><leader>"] = {"<cmd>so <CR>", "Execute file (shoutout)"},
+
+     -- save
     ["<C-s>"] = { "<cmd> w <CR>", "Save file" },
 
     -- Copy all
@@ -41,6 +43,7 @@ M.general = {
     ["k"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true } },
     ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true } },
     ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true } },
+
 
     -- new buffer
     ["<leader>b"] = { "<cmd> enew <CR>", "New buffer" },
@@ -72,6 +75,13 @@ M.general = {
     -- https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text#Alternative_mapping_for_paste
     ["p"] = { 'p:let @+=@0<CR>:let @"=@0<CR>', "Dont copy replaced text", opts = { silent = true } },
   },
+}
+
+M.navigation = {
+  n = {
+    ['<C-o>']  = { "<C-o>", "Go to previous"},
+    ['<C-i>']  = { "<C-i>", "Go to future"}
+  }
 }
 
 M.tabufline = {
@@ -272,15 +282,17 @@ M.telescope = {
     -- find
     ["<leader>ff"] = { "<cmd> Telescope find_files <CR>", "Find files" },
     ["<leader>fa"] = { "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>", "Find all" },
-    ["<leader>fw"] = { "<cmd> Telescope live_grep <CR>", "Live grep" },
+    ["<leader>fg"] = { "<cmd> Telescope live_grep <CR>", "Live grep" },
+    ["<C-p>"] = { "<cmd> Telescope git_files <CR>", "Find git files" },
     ["<leader>fb"] = { "<cmd> Telescope buffers <CR>", "Find buffers" },
     ["<leader>fh"] = { "<cmd> Telescope help_tags <CR>", "Help page" },
     ["<leader>fo"] = { "<cmd> Telescope oldfiles <CR>", "Find oldfiles" },
     ["<leader>fz"] = { "<cmd> Telescope current_buffer_fuzzy_find <CR>", "Find in current buffer" },
 
     -- git
-    ["<leader>cm"] = { "<cmd> Telescope git_commits <CR>", "Git commits" },
-    ["<leader>gt"] = { "<cmd> Telescope git_status <CR>", "Git status" },
+    ["<leader>gm"] = { "<cmd> Telescope git_commits <CR>", "Git commits" },
+    ["<leader>gb"] = { "<cmd> Telescope git_branches <CR>", "Git branches" },
+    ["<leader>fs"] = { "<cmd> Telescope git_status <CR>", "Git status" },
 
     -- pick a hidden term
     ["<leader>pt"] = { "<cmd> Telescope terms <CR>", "Pick hidden term" },
@@ -297,26 +309,26 @@ M.nvterm = {
 
   t = {
     -- toggle in terminal mode
-    ["<A-i>"] = {
-      function()
-        require("nvterm.terminal").toggle "float"
-      end,
-      "Toggle floating term",
-    },
+    -- ["<A-i>"] = {
+    --   function()
+    --     require("nvterm.terminal").toggle "float"
+    --   end,
+    --   "Toggle floating term",
+    -- },
 
-    ["<A-h>"] = {
+    ["<leader>tt"] = {
       function()
         require("nvterm.terminal").toggle "horizontal"
       end,
       "Toggle horizontal term",
     },
 
-    ["<A-v>"] = {
-      function()
-        require("nvterm.terminal").toggle "vertical"
-      end,
-      "Toggle vertical term",
-    },
+    -- ["<leader>tv"] = {
+    --   function()
+    --     require("nvterm.terminal").toggle "vertical"
+    --   end,
+    --   "Toggle vertical term",
+    -- },
   },
 
   n = {
@@ -328,33 +340,11 @@ M.nvterm = {
       "Toggle floating term",
     },
 
-    ["<A-h>"] = {
+    ["<leader>tt"] = {
       function()
         require("nvterm.terminal").toggle "horizontal"
       end,
       "Toggle horizontal term",
-    },
-
-    ["<A-v>"] = {
-      function()
-        require("nvterm.terminal").toggle "vertical"
-      end,
-      "Toggle vertical term",
-    },
-
-    -- new
-    ["<leader>h"] = {
-      function()
-        require("nvterm.terminal").new "horizontal"
-      end,
-      "New horizontal term",
-    },
-
-    ["<leader>v"] = {
-      function()
-        require("nvterm.terminal").new "vertical"
-      end,
-      "New vertical term",
     },
   },
 }
@@ -363,13 +353,13 @@ M.whichkey = {
   plugin = true,
 
   n = {
-    ["<leader>wK"] = {
+    ["<leader>hK"] = {
       function()
         vim.cmd "WhichKey"
       end,
       "Which-key all keymaps",
     },
-    ["<leader>wk"] = {
+    ["<leader>hk"] = {
       function()
         local input = vim.fn.input "WhichKey: "
         vim.cmd("WhichKey " .. input)
@@ -405,6 +395,11 @@ M.gitsigns = {
   plugin = true,
 
   n = {
+    ["<leader>gs"] = { "<cmd> Git <CR>", "Show git status" },
+    ["<leader>gl"] = { "<cmd> Git log --oneline <CR>", "Show git status" },
+    ["<leader>gr"] = { "<cmd> Git pull --rebase upstream master <CR>", "Rebase with master" },
+    ["<leader>gp"] = { "<cmd> Git pull --rebase upstream master <CR>", "Push current branch" },
+
     -- Navigation through hunks
     ["]c"] = {
       function()
@@ -435,7 +430,31 @@ M.gitsigns = {
     },
 
     -- Actions
-    ["<leader>rh"] = {
+    ["<leader>hs"] = {
+      function()
+        require("gitsigns").stage_hunk()
+      end,
+      "Stage hunk",
+    },
+    ["<leader>hS"] = {
+      function()
+        require("gitsigns").stage_buffer()
+      end,
+      "Stage buffer (whole file)",
+    },
+    ["<leader>hu"] = {
+      function()
+        require("gitsigns").undo_stage_hunk()
+      end,
+      "Unstage buffer (whole file)",
+    },
+      ["<leader>hR"] = {
+      function()
+        require("gitsigns").reset_buffer()
+      end,
+      "Reset git changes (whole file)",
+    },
+    ["<leader>hr"] = {
       function()
         require("gitsigns").reset_hunk()
       end,
@@ -448,21 +467,51 @@ M.gitsigns = {
       end,
       "Preview hunk",
     },
-
-    ["<leader>gb"] = {
-      function()
-        package.loaded.gitsigns.blame_line()
-      end,
-      "Blame line",
-    },
-
+    -- Disabled infavor of git branch
+    -- ["<leader>gb"] = {
+    --   function()
+    --     package.loaded.gitsigns.blame_line()
+    --   end,
+    --   "Blame line",
+    -- },
+    --
     ["<leader>td"] = {
       function()
         require("gitsigns").toggle_deleted()
       end,
       "Toggle deleted",
     },
+
+    ["<leader>hd"] = {
+      function()
+        require("gitsigns").diffthis()
+      end,
+      "Diff current hunk",
+    },
   },
+
+  v = {
+    ["<leader>hs"] = {
+      function()
+        require("gitsigns").stage_hunk()
+      end,
+      "Visual stage hunk",
+    },
+
+    ["<leader>hr"] = {
+      function()
+        require("gitsigns").reset_hunk()
+      end,
+      "Visual reset hunk",
+    },
+  }
 }
+
+-- custom vim mapping that aren't on the cheatsheet
+vim.keymap.set("x", "<leader>p", [["_dP]])
+
+-- next greatest remap ever : asbjornHaland
+vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
+vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 return M

@@ -119,7 +119,14 @@ local default_plugins = {
       require("gitsigns").setup(opts)
     end,
   },
-
+  {
+    "tpope/vim-fugitive",
+    cmd = {
+      "G", "Git", "Gdiffsplit", "Gvdiffsplit", "Gedit", "Gsplit",
+      "Gread", "Gwrite", "Ggrep", "Glgrep", "Gmove",
+      "Gdelete", "Gremove", "Gbrowse",
+    },
+  },
   -- lsp stuff
   {
     "williamboman/mason.nvim",

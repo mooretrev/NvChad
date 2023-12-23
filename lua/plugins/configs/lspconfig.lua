@@ -41,7 +41,26 @@ M.capabilities.textDocument.completion.completionItem = {
   },
 }
 
-require("lspconfig").lua_ls.setup {
+local lspconfig = require("lspconfig")
+
+lspconfig.eslint.setup({
+  on_attach = function(client, bufnr)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      command = "EslintFixAll",
+    })
+  end,
+  capabilities = M.capabilities,
+})
+
+lspconfig.tsserver.setup {
+  on_attach = M.on_attach,
+  capabilities = M.capabilities,
+}
+
+-- lua lsp server setup
+lspconfig.lua_ls.setup {
+
   on_attach = M.on_attach,
   capabilities = M.capabilities,
 
@@ -63,5 +82,7 @@ require("lspconfig").lua_ls.setup {
     },
   },
 }
+
+vim.keymap.set("n", "<leader>fe", "<cmd>EslintFixAll<cr>")
 
 return M
