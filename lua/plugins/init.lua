@@ -157,6 +157,33 @@ local default_plugins = {
     end,
   },
 
+  {
+    'mfussenegger/nvim-jdtls',
+    cmd = {
+      "JdtCompile",
+      "JdtSetRuntime",
+      "JdtUpdateConfig",
+      "JdtUpdateDebugConfig",
+      "JdtUpdateHotcode",
+      "JdtBytecode",
+      "JdtJol",
+      "JdtJshell",
+      "JdtRestart",
+    },
+    opts = function ()
+      return require "plugins.configs.java"
+    end,
+    config = function(_, opts)
+      local config = {
+        cmd = {'/usr/local/bin/jdtls'},
+        root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+      }
+      require('jdtls').start_or_attach(config)
+
+      -- require('jdtls').start_or_attach(opts)
+    end,
+  },
+
   -- load luasnips + cmp related in insert mode only
   {
     "hrsh7th/nvim-cmp",
